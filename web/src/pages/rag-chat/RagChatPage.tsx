@@ -1,10 +1,10 @@
-import { useConversations } from '../../hooks/useConversations';
+import { useRagConversations } from '../../hooks/useRagConversations';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { ConversationList } from './ConversationList';
 import { RagChatArea } from './RagChatArea';
 
 export function RagChatPage() {
-  const { conversations, activeConversation, loading, sending, error, create, select, send, remove } = useConversations();
+  const { conversations, activeConversation, loading, sending, error, create, select, send, remove } = useRagConversations();
 
   if (loading) return <LoadingSpinner />;
 

@@ -7,8 +7,11 @@ import {
     Delete,
     HttpCode,
     HttpStatus,
+    UseInterceptors,
+    UploadedFile,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { RagChatService } from './rag-chat.service.js';
 import { CreateRagConversationDto } from './dto/create-rag-conversation.dto.js';
 import { SendRagMessageDto } from './dto/send-rag-message.dto.js';
@@ -31,6 +34,25 @@ export class RagChatController {
     @ApiResponse({ status: 201, description: 'Knowledge added successfully.' })
     addKnowledge(@Body() addKnowledgeDto: AddKnowledgeDto) {
         return this.ragChatService.addKnowledge(addKnowledgeDto);
+    }
+
+    @Post('knowledge/upload')
+    @ApiOperation({ summary: 'Upload a document (PDF, TXT, MD) to the active Vector Store' })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: {
+                    type: 'string',
+                    format: 'binary',
+                },
+            },
+        },
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    uploadKnowledge(@UploadedFile() file: Express.Multer.File) {
+        return this.ragChatService.uploadKnowledge(file);
     }
 
     @Get()

@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { AiProviderService } from '../ai-provider/ai-provider.service.js';
 import { AiProviderName } from '../ai-provider/enums/ai-provider-name.enum.js';
@@ -8,6 +8,8 @@ import { AgentType } from '../agent-config/enums/agent-type.enum.js';
 
 @Injectable()
 export class LangchainService {
+  private readonly logger = new Logger(LangchainService.name);
+
   constructor(
     private readonly aiProviderService: AiProviderService,
     private readonly agentConfigService: AgentConfigService,
@@ -82,6 +84,7 @@ export class LangchainService {
   }
 
   private async buildEmbeddingsModel(provider: AiProviderDocument): Promise<any> {
+    this.logger.log(`Building embeddings model for provider: ${provider.aiProviderName}, model: ${provider.modelName}`);
     switch (provider.aiProviderName) {
       case AiProviderName.OLLAMA_LOCAL: {
         const { OllamaEmbeddings } = await import('@langchain/ollama');
@@ -107,8 +110,11 @@ export class LangchainService {
           throw new BadRequestException('API key is required for Gemini provider');
         }
         const { GoogleGenerativeAIEmbeddings } = await import('@langchain/google-genai');
+        // Use the newest embedding model for Gemini
+        const embeddingModel = 'models/gemini-embedding-001';
+        this.logger.log(`Using Gemini Embedding Model: ${embeddingModel}`);
         return new GoogleGenerativeAIEmbeddings({
-          model: 'text-multilingual-embedding-002', // default embedding for gemini
+          model: embeddingModel,
           apiKey: provider.apiKey,
         });
       }

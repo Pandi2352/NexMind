@@ -24,6 +24,7 @@
     "@langchain/core": "^1.1.29",
     "@langchain/google-genai": "^2.1.22",
     "@langchain/ollama": "^1.2.5",
+    "@langchain/textsplitters": "^1.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
@@ -37,6 +38,7 @@
     "langchain": "^1.2.28",
     "mongoose": "^9.2.3",
     "multer": "^2.1.0",
+    "pdf-parse": "^1.1.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "uuid": "^13.0.0"

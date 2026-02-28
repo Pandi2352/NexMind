@@ -15,7 +15,7 @@ export const ragChatService = {
     },
 
     sendMessage(conversationId: string, dto: SendMessageDto): Promise<SendMessageResponse> {
-        return api.post(`/rag-chat/conversations/${conversationId}/messages`, dto).then((r) => r.data);
+        return api.post(`/rag-chat/conversations/${conversationId}/messages`, { content: dto.message }).then((r) => r.data);
     },
 
     delete(id: string): Promise<void> {
@@ -25,4 +25,14 @@ export const ragChatService = {
     addKnowledge(texts: string[]): Promise<{ inserted: number }> {
         return api.post('/rag-chat/conversations/knowledge', { texts }).then((r) => r.data);
     },
+
+    uploadKnowledge(file: File): Promise<{ inserted: number }> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return api.post('/rag-chat/conversations/knowledge/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }).then((r) => r.data);
+    }
 };

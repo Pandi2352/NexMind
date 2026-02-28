@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AgentConfig, AgentConfigSchema } from './schemas/agent-config.schema';
-import { AgentConfigController } from './agent-config.controller';
-import { AgentConfigService } from './agent-config.service';
-import { AiProviderModule } from '../ai-provider/ai-provider.module';
-import { VectorStoreModule } from '../vector-store/vector-store.module';
+import { AgentConfig, AgentConfigSchema } from './schemas/agent-config.schema.js';
+import { AgentConfigController } from './agent-config.controller.js';
+import { AgentConfigService } from './agent-config.service.js';
+import { AiProviderModule } from '../ai-provider/ai-provider.module.js';
+import { VectorStoreModule } from '../vector-store/vector-store.module.js';
 
 @Module({
   imports: [
     AiProviderModule,
-    VectorStoreModule,
+    forwardRef(() => VectorStoreModule),
     MongooseModule.forFeature([
       { name: AgentConfig.name, schema: AgentConfigSchema },
     ]),

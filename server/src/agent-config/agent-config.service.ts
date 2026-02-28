@@ -1,19 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AgentConfig, AgentConfigDocument } from './schemas/agent-config.schema';
-import { AgentType } from './enums/agent-type.enum';
-import { AssignProviderDto } from './dto/assign-provider.dto';
-import { AiProviderService } from '../ai-provider/ai-provider.service';
-import { AiProviderDocument } from '../ai-provider/schemas/ai-provider.schema';
-import { VectorStoreService } from '../vector-store/vector-store.service';
-import { VectorStoreDocument } from '../vector-store/schemas/vector-store.schema';
+import { AgentConfig, AgentConfigDocument } from './schemas/agent-config.schema.js';
+import { AgentType } from './enums/agent-type.enum.js';
+import { AssignProviderDto } from './dto/assign-provider.dto.js';
+import { AiProviderService } from '../ai-provider/ai-provider.service.js';
+import { AiProviderDocument } from '../ai-provider/schemas/ai-provider.schema.js';
+import { VectorStoreService } from '../vector-store/vector-store.service.js';
+import { VectorStoreDocument } from '../vector-store/schemas/vector-store.schema.js';
+
 @Injectable()
 export class AgentConfigService {
   constructor(
     @InjectModel(AgentConfig.name)
     private agentConfigModel: Model<AgentConfigDocument>,
     private readonly aiProviderService: AiProviderService,
+    @Inject(forwardRef(() => VectorStoreService))
     private readonly vectorStoreService: VectorStoreService,
   ) { }
 

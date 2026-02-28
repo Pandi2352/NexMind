@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VectorStoreController } from './vector-store.controller.js';
 import { VectorStoreService } from './vector-store.service.js';
@@ -11,7 +11,7 @@ import { LangchainModule } from '../langchain/langchain.module.js';
         MongooseModule.forFeature([
             { name: VectorStore.name, schema: VectorStoreSchema },
         ]),
-        LangchainModule,
+        forwardRef(() => LangchainModule),
     ],
     controllers: [VectorStoreController],
     providers: [VectorStoreService, VectorStoreFactory],
