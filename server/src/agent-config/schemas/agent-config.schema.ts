@@ -15,6 +15,9 @@ export class AgentConfig {
 
   @Prop({ required: true })
   aiProviderId: string;
+
+  @Prop({ required: false })
+  vectorStoreId?: string;
 }
 
 export const AgentConfigSchema = SchemaFactory.createForClass(AgentConfig);

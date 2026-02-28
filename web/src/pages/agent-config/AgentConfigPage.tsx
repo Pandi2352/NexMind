@@ -6,6 +6,7 @@ export function AgentConfigPage() {
   const {
     agentViews,
     providers,
+    vectorStores,
     activeProvider,
     loading,
     error,
@@ -81,6 +82,7 @@ export function AgentConfigPage() {
             key={view.agentType}
             config={view}
             providers={providers}
+            vectorStores={vectorStores}
             onAssign={assign}
             onRemove={remove}
           />

@@ -18,8 +18,10 @@ nexmind/
 | Feature | Description |
 |---------|-------------|
 | **AI Providers** | CRUD for Ollama (local/cloud) and Gemini providers with active-provider toggle |
-| **Agent Config** | Assign specific providers per agent type, with fallback to global active |
+| **Vector Stores** | Configurable integration for Pinecone, Chroma, Milvus, Qdrant, Upstash |
+| **Agent Config** | Assign specific providers and vector stores per agent type, with fallback to global active |
 | **Chat** | Multi-conversation chatbot with message history and system prompts |
+| **RAG Chat** | AI Chat augmented with knowledge retrieval from configured vector stores |
 | **Translator** | AI-powered text translation with language auto-detection and history |
 | **Summarizer** | Text summarization with multiple styles (bullet-points, TL;DR, ELI5, etc.) and history |
 | **Prompt Optimizer** | Rewrites vague prompts into clear, structured instructions with copy-to-clipboard and history |
@@ -75,11 +77,12 @@ Navigate to [http://localhost:5173](http://localhost:5173). You'll land on the *
 
 1. **Add a provider** (e.g. Ollama Local with model `llama3.2`)
 2. **Set it as active**
-3. Go to **Chat** and start a conversation
-4. Or go to **Translator** and translate some text
-5. Or go to **Summarizer** and summarize a document
-6. Or go to **Prompt Optimizer** and refine a prompt
-7. Or go to **Health Advisor** for wellness suggestions
+3. **Configure a Vector Store** in the Vector Stores tab (if using RAG capabilities)
+4. Go to **Chat** or **RAG Chat** and start a conversation
+5. Or go to **Translator** and translate some text
+6. Or go to **Summarizer** and summarize a document
+7. Or go to **Prompt Optimizer** and refine a prompt
+8. Or go to **Health Advisor** for wellness suggestions
 
 ## Environment Variables
 
@@ -108,13 +111,23 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 | `PATCH` | `/ai-provider/:id/set-active` | Set as active |
 | `DELETE` | `/ai-provider/:id` | Delete a provider |
 
+### Vector Stores
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/vector-store` | Create a new vector store |
+| `GET` | `/vector-store` | List all vector stores |
+| `GET` | `/vector-store/:id` | Get vector store by ID |
+| `PATCH` | `/vector-store/:id` | Update a vector store |
+| `DELETE` | `/vector-store/:id` | Delete a vector store |
+
 ### Agent Config
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `PUT` | `/agent-config/assign` | Assign provider to an agent type |
+| `PUT` | `/agent-config/assign` | Assign provider and vector store to an agent type |
 | `GET` | `/agent-config` | List all assignments |
-| `GET` | `/agent-config/:agentType` | Get provider for agent (`chat`, `translator`, `summarizer`, `prompt-optimizer`, `health`) |
+| `GET` | `/agent-config/:agentType` | Get config for agent (`chat`, `rag-chat`, `translator`, `summarizer`, `prompt-optimizer`, `health`) |
 | `DELETE` | `/agent-config/:agentType` | Remove assignment (falls back to global active) |
 
 ### Chat
@@ -126,6 +139,16 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 | `GET` | `/chat/conversations/:id` | Get conversation with full history |
 | `POST` | `/chat/conversations/:id/messages` | Send message and get AI reply |
 | `DELETE` | `/chat/conversations/:id` | Delete a conversation |
+
+### RAG Chat
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/rag-chat/conversations` | Create a RAG conversation |
+| `GET` | `/rag-chat/conversations` | List all RAG conversations |
+| `GET` | `/rag-chat/conversations/:id` | Get RAG conversation with history |
+| `POST` | `/rag-chat/conversations/:id/messages` | Send message and get AI reply with retrieved memory |
+| `DELETE` | `/rag-chat/conversations/:id` | Delete a RAG conversation |
 
 ### Translator
 
@@ -171,6 +194,16 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 | `ollama cloud` | `modelName`, `baseUrl` | Remote Ollama instance |
 | `gemini` | `modelName`, `apiKey` | Google Gemini API |
 
+## Supported Vector Stores
+
+| Store | Configurable Fields |
+|----------|----------------|
+| `chroma` | `baseUrl` |
+| `pinecone` | `apiKey`, `baseUrl`, `indexName` |
+| `milvus` | |
+| `qdrant` | `apiKey`, `baseUrl`, `indexName` |
+| `upstash` | `apiKey`, `baseUrl`, `indexName` |
+
 ## Project Structure
 
 ### Server (`server/`)
@@ -178,7 +211,8 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 ```
 src/
 ├── ai-provider/          # Provider CRUD + active toggle
-├── agent-config/         # Per-agent provider assignment
+├── vector-store/         # Vector Storage CRUD
+├── agent-config/         # Per-agent provider/vector store assignment
 ├── chat/                 # Conversations & messages
 ├── translator/           # Text translation
 ├── summarizer/           # Text summarization
@@ -202,8 +236,10 @@ src/
 │   └── ui/               # LoadingSpinner, EmptyState, ConfirmDialog, StatusBadge
 ├── pages/
 │   ├── ai-providers/     # Provider CRUD page
-│   ├── agent-config/     # Agent-provider assignment page
+│   ├── vector-stores/    # Vector store config page
+│   ├── agent-config/     # Agent assignment page
 │   ├── chat/             # Chat interface (conversations + messages)
+│   ├── rag-chat/         # RAG Chat interface
 │   ├── translator/       # Translation form + history
 │   ├── summarizer/       # Summarization form + history
 │   ├── prompt-optimizer/ # Prompt optimization + copy + history

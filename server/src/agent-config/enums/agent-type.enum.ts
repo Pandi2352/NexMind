@@ -4,4 +4,5 @@ export enum AgentType {
   SUMMARIZER = 'summarizer',
   PROMPT_OPTIMIZER = 'prompt-optimizer',
   HEALTH = 'health',
+  RAG_CHAT = 'rag-chat',
 }

@@ -14,3 +14,6 @@ export type { Summary, CreateSummaryDto } from './summarizer';
 export type { PromptOptimization, CreatePromptOptimizationDto } from './prompt-optimizer';
 
 export type { HealthConsultation, CreateHealthConsultationDto } from './health';
+
+export { VectorStoreType } from './vector-store';
+export type { VectorStoreTypeValue, VectorStore, CreateVectorStoreDto, UpdateVectorStoreDto } from './vector-store';

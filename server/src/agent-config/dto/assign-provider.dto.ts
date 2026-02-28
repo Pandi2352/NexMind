@@ -1,5 +1,5 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AgentType } from '../enums/agent-type.enum';
 
 export class AssignProviderDto {
@@ -12,4 +12,9 @@ export class AssignProviderDto {
   @IsString()
   @IsNotEmpty()
   aiProviderId: string;
+
+  @ApiPropertyOptional({ description: 'The optional Vector Store ID to use for this agent' })
+  @IsString()
+  @IsOptional()
+  vectorStoreId?: string;
 }

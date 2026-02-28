@@ -5,6 +5,7 @@ const navCategories = [
     title: 'Applications',
     items: [
       { to: '/chat', label: 'Chat', icon: '💬' },
+      { to: '/rag-chat', label: 'RAG Chat', icon: '🧠' },
       { to: '/translator', label: 'Translator', icon: '🌐' },
       { to: '/summarizer', label: 'Summarizer', icon: '📝' },
       { to: '/prompt-optimizer', label: 'Prompt Optimizer', icon: '✨' },
@@ -15,6 +16,7 @@ const navCategories = [
     title: 'Configuration',
     items: [
       { to: '/providers', label: 'AI Providers', icon: '⚙' },
+      { to: '/vector-stores', label: 'Vector Stores', icon: '🗄' },
       { to: '/agent-config', label: 'Agent Config', icon: '🔗' },
     ],
   },

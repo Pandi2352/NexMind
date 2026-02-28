@@ -11,6 +11,8 @@ import { AgentConfigModule } from './agent-config/agent-config.module';
 import { SummarizerModule } from './summarizer/summarizer.module';
 import { PromptOptimizerModule } from './prompt-optimizer/prompt-optimizer.module';
 import { HealthModule } from './health/health.module';
+import { VectorStoreModule } from './vector-store/vector-store.module';
+import { RagChatModule } from './rag-chat/rag-chat.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { HealthModule } from './health/health.module';
     PromptOptimizerModule,
     HealthModule,
     AgentConfigModule,
+    VectorStoreModule,
+    RagChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
