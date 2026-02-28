@@ -15,6 +15,8 @@ export interface VectorStore {
     baseUrl?: string;
     apiKey?: string;
     indexName?: string;
+    tenant?: string;
+    database?: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -25,6 +27,8 @@ export interface CreateVectorStoreDto {
     baseUrl?: string;
     apiKey?: string;
     indexName?: string;
+    tenant?: string;
+    database?: string;
 }
 
 export interface UpdateVectorStoreDto extends Partial<CreateVectorStoreDto> { }

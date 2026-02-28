@@ -8,6 +8,7 @@ import {
 } from './schemas/rag-conversation.schema.js';
 import { LangchainModule } from '../langchain/langchain.module.js';
 import { AgentConfigModule } from '../agent-config/agent-config.module.js';
+import { VectorStoreModule } from '../vector-store/vector-store.module.js';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AgentConfigModule } from '../agent-config/agent-config.module.js';
     ]),
     LangchainModule,
     AgentConfigModule,
+    VectorStoreModule,
   ],
   controllers: [RagChatController],
   providers: [RagChatService],

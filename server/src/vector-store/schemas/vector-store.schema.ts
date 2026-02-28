@@ -24,6 +24,12 @@ export class VectorStore {
 
     @Prop({ required: false })
     indexName?: string;
+
+    @Prop({ required: false })
+    tenant?: string;
+
+    @Prop({ required: false })
+    database?: string;
 }
 
 export const VectorStoreSchema = SchemaFactory.createForClass(VectorStore);

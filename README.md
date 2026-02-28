@@ -198,7 +198,7 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 
 | Store | Configurable Fields |
 |----------|----------------|
-| `chroma` | `baseUrl` |
+| `chroma` | `apiKey`, `baseUrl`, `indexName` (for collection name) |
 | `pinecone` | `apiKey`, `baseUrl`, `indexName` |
 | `milvus` | |
 | `qdrant` | `apiKey`, `baseUrl`, `indexName` |

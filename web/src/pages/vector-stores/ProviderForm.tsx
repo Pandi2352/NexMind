@@ -14,6 +14,8 @@ export function ProviderForm({ initial, onSubmit, onCancel }: Props) {
     baseUrl: initial?.baseUrl || "",
     apiKey: initial?.apiKey || "",
     indexName: initial?.indexName || "",
+    tenant: initial?.tenant || "",
+    database: initial?.database || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -67,7 +69,7 @@ export function ProviderForm({ initial, onSubmit, onCancel }: Props) {
           </div>
         </>
       )}
-      {(formData.type === 'pinecone' || formData.type === 'qdrant' || formData.type === 'upstash') && (
+      {(formData.type === 'pinecone' || formData.type === 'chroma' || formData.type === 'qdrant' || formData.type === 'upstash') && (
         <>
          <div>
             <label className="block text-sm font-medium text-slate-700">API Key (optional)</label>
@@ -80,7 +82,7 @@ export function ProviderForm({ initial, onSubmit, onCancel }: Props) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Index Name (optional)</label>
+            <label className="block text-sm font-medium text-slate-700">Index Name / Collection (optional)</label>
             <input
               name="indexName"
               type="text"
@@ -89,6 +91,30 @@ export function ProviderForm({ initial, onSubmit, onCancel }: Props) {
               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 sm:text-sm outline-none"
             />
           </div>
+        </>
+      )}
+      {(formData.type === 'chroma') && (
+        <>
+          <div>
+             <label className="block text-sm font-medium text-slate-700">Tenant (optional)</label>
+             <input
+               name="tenant"
+               type="text"
+               value={formData.tenant || ""}
+               onChange={handleChange}
+               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 sm:text-sm outline-none"
+             />
+           </div>
+           <div>
+             <label className="block text-sm font-medium text-slate-700">Database (optional)</label>
+             <input
+               name="database"
+               type="text"
+               value={formData.database || ""}
+               onChange={handleChange}
+               className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 sm:text-sm outline-none"
+             />
+           </div>
         </>
       )}
       <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">

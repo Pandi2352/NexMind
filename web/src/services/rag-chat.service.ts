@@ -21,4 +21,8 @@ export const ragChatService = {
     delete(id: string): Promise<void> {
         return api.delete(`/rag-chat/conversations/${id}`).then(() => undefined);
     },
+
+    addKnowledge(texts: string[]): Promise<{ inserted: number }> {
+        return api.post('/rag-chat/conversations/knowledge', { texts }).then((r) => r.data);
+    },
 };

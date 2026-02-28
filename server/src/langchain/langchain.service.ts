@@ -11,7 +11,7 @@ export class LangchainService {
   constructor(
     private readonly aiProviderService: AiProviderService,
     private readonly agentConfigService: AgentConfigService,
-  ) {}
+  ) { }
 
   async createChatModel(): Promise<BaseChatModel> {
     const provider = await this.aiProviderService.getActive();
@@ -68,6 +68,53 @@ export class LangchainService {
         throw new BadRequestException(
           `Unsupported AI provider: ${provider.aiProviderName}`,
         );
+    }
+  }
+
+  async createEmbeddingsModel(): Promise<any> {
+    const provider = await this.aiProviderService.getActive();
+    return this.buildEmbeddingsModel(provider);
+  }
+
+  async createEmbeddingsModelForAgent(agentType: AgentType): Promise<any> {
+    const provider = await this.agentConfigService.getProviderForAgent(agentType);
+    return this.buildEmbeddingsModel(provider);
+  }
+
+  private async buildEmbeddingsModel(provider: AiProviderDocument): Promise<any> {
+    switch (provider.aiProviderName) {
+      case AiProviderName.OLLAMA_LOCAL: {
+        const { OllamaEmbeddings } = await import('@langchain/ollama');
+        return new OllamaEmbeddings({
+          model: provider.modelName,
+          baseUrl: provider.baseUrl || 'http://localhost:11434',
+        });
+      }
+
+      case AiProviderName.OLLAMA_CLOUD: {
+        if (!provider.baseUrl) {
+          throw new BadRequestException('Base URL is required for Ollama Cloud provider');
+        }
+        const { OllamaEmbeddings } = await import('@langchain/ollama');
+        return new OllamaEmbeddings({
+          model: provider.modelName,
+          baseUrl: provider.baseUrl,
+        });
+      }
+
+      case AiProviderName.GEMINI: {
+        if (!provider.apiKey) {
+          throw new BadRequestException('API key is required for Gemini provider');
+        }
+        const { GoogleGenerativeAIEmbeddings } = await import('@langchain/google-genai');
+        return new GoogleGenerativeAIEmbeddings({
+          model: 'text-multilingual-embedding-002', // default embedding for gemini
+          apiKey: provider.apiKey,
+        });
+      }
+
+      default:
+        throw new BadRequestException(`Unsupported AI provider: ${provider.aiProviderName}`);
     }
   }
 }

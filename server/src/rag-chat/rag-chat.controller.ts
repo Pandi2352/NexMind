@@ -12,6 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { RagChatService } from './rag-chat.service.js';
 import { CreateRagConversationDto } from './dto/create-rag-conversation.dto.js';
 import { SendRagMessageDto } from './dto/send-rag-message.dto.js';
+import { AddKnowledgeDto } from './dto/add-knowledge.dto.js';
 
 @ApiTags('rag-chat')
 @Controller('rag-chat/conversations')
@@ -23,6 +24,13 @@ export class RagChatController {
     @ApiResponse({ status: 201, description: 'Created successfully.' })
     create(@Body() createRagConversationDto: CreateRagConversationDto) {
         return this.ragChatService.createConversation(createRagConversationDto);
+    }
+
+    @Post('knowledge')
+    @ApiOperation({ summary: 'Add external knowledge to the active Vector Store mapped to RAG Agent' })
+    @ApiResponse({ status: 201, description: 'Knowledge added successfully.' })
+    addKnowledge(@Body() addKnowledgeDto: AddKnowledgeDto) {
+        return this.ragChatService.addKnowledge(addKnowledgeDto);
     }
 
     @Get()

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Conversation } from '../../types';
 import { MessageBubble } from './MessageBubble';
+import { ragChatService } from '../../services/rag-chat.service';
 
 interface RagChatAreaProps {
   conversation: Conversation | null;
@@ -10,6 +11,9 @@ interface RagChatAreaProps {
 
 export function RagChatArea({ conversation, sending, onSend }: RagChatAreaProps) {
   const [input, setInput] = useState('');
+  const [isKnowledgeModalOpen, setIsKnowledgeModalOpen] = useState(false);
+  const [knowledgeText, setKnowledgeText] = useState('');
+  const [uploadingKnowledge, setUploadingKnowledge] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,18 +42,41 @@ export function RagChatArea({ conversation, sending, onSend }: RagChatAreaProps)
     await onSend(msg);
   };
 
+  const handleAddKnowledge = async () => {
+    if (!knowledgeText.trim()) return;
+    setUploadingKnowledge(true);
+    try {
+      await ragChatService.addKnowledge([knowledgeText]);
+      alert("Successfully added knowledge to vector store!");
+      setKnowledgeText('');
+      setIsKnowledgeModalOpen(false);
+    } catch (err: any) {
+      alert("Failed to add knowledge: " + (err.response?.data?.message || err.message));
+    } finally {
+      setUploadingKnowledge(false);
+    }
+  };
+
   return (
-    <div className="flex flex-1 flex-col bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="flex items-center gap-3 border-b border-slate-200 bg-white/80 px-6 py-4 backdrop-blur-sm">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-          </svg>
+    <div className="flex flex-1 flex-col bg-gradient-to-br from-slate-50 to-slate-100 relative">
+      <div className="flex items-center justify-between border-b border-slate-200 bg-white/80 px-6 py-4 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">{conversation.title}</h3>
+            <p className="text-xs text-slate-500">{conversation.messages.length} messages</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-sm font-semibold text-slate-900">{conversation.title}</h3>
-          <p className="text-xs text-slate-500">{conversation.messages.length} messages</p>
-        </div>
+        <button
+          onClick={() => setIsKnowledgeModalOpen(true)}
+          className="rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700 shadow-sm border border-teal-200 hover:bg-teal-100 transition-colors"
+        >
+          + Add Knowledge
+        </button>
       </div>
 
       <div className="flex-1 overflow-auto px-6 py-6 space-y-4">
@@ -100,6 +127,37 @@ export function RagChatArea({ conversation, sending, onSend }: RagChatAreaProps)
           </button>
         </form>
       </div>
+
+      {isKnowledgeModalOpen && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Add Knowledge</h3>
+            <p className="text-sm text-slate-500 mb-4">Paste document text here to add it to the configured RAG vector store.</p>
+            <textarea
+              className="w-full rounded-md border border-slate-300 p-3 text-sm h-40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Paste the text content here..."
+              value={knowledgeText}
+              onChange={(e) => setKnowledgeText(e.target.value)}
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setIsKnowledgeModalOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                disabled={uploadingKnowledge}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddKnowledge}
+                disabled={!knowledgeText.trim() || uploadingKnowledge}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow disabled:opacity-50 transition-colors"
+              >
+                {uploadingKnowledge ? "Uploading..." : "Save Knowledge"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

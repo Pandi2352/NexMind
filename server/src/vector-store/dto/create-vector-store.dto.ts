@@ -26,4 +26,14 @@ export class CreateVectorStoreDto {
     @IsString()
     @IsOptional()
     indexName?: string;
+
+    @ApiPropertyOptional()
+    @IsString()
+    @IsOptional()
+    tenant?: string;
+
+    @ApiPropertyOptional()
+    @IsString()
+    @IsOptional()
+    database?: string;
 }

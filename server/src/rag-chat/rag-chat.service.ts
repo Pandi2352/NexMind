@@ -17,6 +17,8 @@ import { LangchainService } from '../langchain/langchain.service.js';
 import { AgentConfigService } from '../agent-config/agent-config.service.js';
 import { AgentType } from '../agent-config/enums/agent-type.enum.js';
 import { MessageRole } from './enums/message-role.enum.js';
+import { VectorStoreFactory } from '../vector-store/vector-store.factory.js';
+import { AddKnowledgeDto } from './dto/add-knowledge.dto.js';
 
 @Injectable()
 export class RagChatService {
@@ -25,6 +27,7 @@ export class RagChatService {
         private conversationModel: Model<RagConversationDocument>,
         private readonly langchainService: LangchainService,
         private readonly agentConfigService: AgentConfigService,
+        private readonly vectorStoreFactory: VectorStoreFactory,
     ) { }
 
     async createConversation(
@@ -46,6 +49,24 @@ export class RagChatService {
         return conversation;
     }
 
+    async addKnowledge(
+        dto: AddKnowledgeDto,
+    ): Promise<{ inserted: number }> {
+        const vectorStoreConfig = await this.agentConfigService.getVectorStoreForAgent(AgentType.RAG_CHAT);
+        if (!vectorStoreConfig) {
+            throw new BadRequestException('No Vector Store configured for RAG Agent. Please configure one first.');
+        }
+
+        const vectorStoreClient = await this.vectorStoreFactory.createVectorStoreClient(vectorStoreConfig);
+
+        // Let's add the documents safely.
+        await vectorStoreClient.addDocuments(
+            dto.texts.map(text => ({ pageContent: text, metadata: { timestamp: Date.now() } }))
+        );
+
+        return { inserted: dto.texts.length };
+    }
+
     async sendMessage(
         id: string,
         dto: SendRagMessageDto,
@@ -55,9 +76,23 @@ export class RagChatService {
         const vectorStoreConfig = await this.agentConfigService.getVectorStoreForAgent(AgentType.RAG_CHAT);
 
         let systemContext = conversation.systemPrompt || '';
+
+        let retrievedContextText = '';
         if (vectorStoreConfig) {
-            // Here you would implement actual vector store retrieval
-            systemContext += `\n\n[System Info: Retrieval Augmented Generation is enabled for vector store "${vectorStoreConfig.name}" (Type: ${vectorStoreConfig.type}). Simulating retrieved content for the prompt...]`;
+            try {
+                const vectorStoreClient = await this.vectorStoreFactory.createVectorStoreClient(vectorStoreConfig);
+                const retriever = vectorStoreClient.asRetriever(3); // Top 3 results
+
+                const retrievedDocs = await retriever.invoke(dto.content);
+
+                if (retrievedDocs && retrievedDocs.length > 0) {
+                    retrievedContextText = retrievedDocs.map(doc => doc.pageContent).join('\n\n');
+                    systemContext += `\n\n[CONTEXT MEMORY PROVIDED BY VECTOR STORE: ${vectorStoreConfig.name}]\n${retrievedContextText}`;
+                }
+            } catch (err) {
+                console.error('[RAG ERROR]', err);
+                systemContext += `\n\n[Warning: Vector Store retrieval failed - ${err.message}]`;
+            }
         } else {
             systemContext += `\n\n[Warning: No Vector Store configured for RAG Agent. Ensure one is selected in Agent Config.]`;
         }

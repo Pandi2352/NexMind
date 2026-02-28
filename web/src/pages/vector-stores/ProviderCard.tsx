@@ -49,6 +49,18 @@ export function ProviderCard({ store, onEdit, onDelete }: Props) {
             <span className="text-slate-900">{store.indexName}</span>
           </div>
         )}
+        {store.tenant && (
+          <div className="flex justify-between border-t border-slate-100 pt-2">
+            <span className="text-slate-500">Tenant</span>
+            <span className="text-slate-900">{store.tenant}</span>
+          </div>
+        )}
+        {store.database && (
+          <div className="flex justify-between border-t border-slate-100 pt-2">
+            <span className="text-slate-500">Database</span>
+            <span className="text-slate-900">{store.database}</span>
+          </div>
+        )}
       </div>
     </div>
   );
