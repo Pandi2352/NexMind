@@ -6,6 +6,7 @@ import { ChatPage } from './pages/chat/ChatPage';
 import { TranslatorPage } from './pages/translator/TranslatorPage';
 import { SummarizerPage } from './pages/summarizer/SummarizerPage';
 import { PromptOptimizerPage } from './pages/prompt-optimizer/PromptOptimizerPage';
+import { HealthPage } from './pages/health/HealthPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
       {
         path: 'prompt-optimizer',
         element: <PromptOptimizerPage />
+      },
+      {
+        path: 'health',
+        element: <HealthPage />
       },
       {
         path: '*',

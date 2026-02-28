@@ -33,6 +33,11 @@ const agentMeta: Record<
     icon: "✨",
     desc: "Prompt rewriting & refinement",
   },
+  health: {
+    gradient: "from-rose-500 to-pink-600",
+    icon: "🩺",
+    desc: "Symptom analysis & health guidance",
+  },
 };
 
 const fallbackMeta = {

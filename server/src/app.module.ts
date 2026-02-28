@@ -10,6 +10,7 @@ import { TranslatorModule } from './translator/translator.module';
 import { AgentConfigModule } from './agent-config/agent-config.module';
 import { SummarizerModule } from './summarizer/summarizer.module';
 import { PromptOptimizerModule } from './prompt-optimizer/prompt-optimizer.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PromptOptimizerModule } from './prompt-optimizer/prompt-optimizer.modul
     TranslatorModule,
     SummarizerModule,
     PromptOptimizerModule,
+    HealthModule,
     AgentConfigModule,
   ],
   controllers: [AppController],

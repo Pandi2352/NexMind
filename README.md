@@ -23,6 +23,7 @@ nexmind/
 | **Translator** | AI-powered text translation with language auto-detection and history |
 | **Summarizer** | Text summarization with multiple styles (bullet-points, TL;DR, ELI5, etc.) and history |
 | **Prompt Optimizer** | Rewrites vague prompts into clear, structured instructions with copy-to-clipboard and history |
+| **Health Advisor** | AI-powered symptom analysis, diet planning, and wellness suggestions with history |
 
 ## Prerequisites
 
@@ -78,6 +79,7 @@ Navigate to [http://localhost:5173](http://localhost:5173). You'll land on the *
 4. Or go to **Translator** and translate some text
 5. Or go to **Summarizer** and summarize a document
 6. Or go to **Prompt Optimizer** and refine a prompt
+7. Or go to **Health Advisor** for wellness suggestions
 
 ## Environment Variables
 
@@ -112,7 +114,7 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 |--------|----------|-------------|
 | `PUT` | `/agent-config/assign` | Assign provider to an agent type |
 | `GET` | `/agent-config` | List all assignments |
-| `GET` | `/agent-config/:agentType` | Get provider for agent (`chat`, `translator`, `summarizer`, `prompt-optimizer`) |
+| `GET` | `/agent-config/:agentType` | Get provider for agent (`chat`, `translator`, `summarizer`, `prompt-optimizer`, `health`) |
 | `DELETE` | `/agent-config/:agentType` | Remove assignment (falls back to global active) |
 
 ### Chat
@@ -151,6 +153,15 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 | `GET` | `/prompt-optimizer` | List all optimizations |
 | `GET` | `/prompt-optimizer/:id` | Get optimization by ID |
 | `DELETE` | `/prompt-optimizer/:id` | Delete an optimization |
+
+### Health Advisor
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/health` | Request health advice or symptom analysis |
+| `GET` | `/health` | List all health advice history |
+| `GET` | `/health/:id` | Get health advice by ID |
+| `DELETE` | `/health/:id` | Delete health advice |
 
 ## Supported Providers
 
@@ -195,7 +206,8 @@ src/
 │   ├── chat/             # Chat interface (conversations + messages)
 │   ├── translator/       # Translation form + history
 │   ├── summarizer/       # Summarization form + history
-│   └── prompt-optimizer/ # Prompt optimization + copy + history
+│   ├── prompt-optimizer/ # Prompt optimization + copy + history
+│   ├── health/           # Health Advisor interface + history
 ├── App.tsx               # Router setup
 └── main.tsx              # Entry point
 ```

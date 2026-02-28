@@ -3,4 +3,5 @@ export enum AgentType {
   TRANSLATOR = 'translator',
   SUMMARIZER = 'summarizer',
   PROMPT_OPTIMIZER = 'prompt-optimizer',
+  HEALTH = 'health',
 }

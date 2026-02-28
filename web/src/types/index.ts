@@ -12,3 +12,5 @@ export type { Translation, CreateTranslationDto } from './translator';
 export type { Summary, CreateSummaryDto } from './summarizer';
 
 export type { PromptOptimization, CreatePromptOptimizationDto } from './prompt-optimizer';
+
+export type { HealthConsultation, CreateHealthConsultationDto } from './health';
