@@ -9,21 +9,25 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const isHuman = message.role === MessageRole.HUMAN;
 
   return (
-    <div className={`flex w-full ${isHuman ? 'justify-end' : 'justify-start'}`}>
-      <div className={`flex flex-col max-w-[85%] sm:max-w-[70%] text-sm ${isHuman ? 'items-end' : 'items-start'}`}>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
-          {isHuman ? 'You' : 'AI'}
-        </span>
+    <div className={`flex gap-3 ${isHuman ? 'flex-row-reverse' : ''}`}>
+      <div
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+          isHuman
+            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
+            : 'bg-gradient-to-br from-emerald-400 to-teal-600 text-white'
+        }`}
+      >
+        {isHuman ? 'U' : 'AI'}
+      </div>
+      <div className={`max-w-[75%] ${isHuman ? 'items-end' : 'items-start'}`}>
         <div
-          className={`px-5 py-4 w-full shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]  ${
+          className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
             isHuman
-              ? 'border-2 border-slate-900 bg-slate-900 text-white'
-              : 'border-2 border-slate-900 bg-white text-slate-900'
+              ? 'rounded-tr-sm bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
+              : 'rounded-tl-sm border border-slate-200 bg-white text-slate-800 shadow-sm'
           }`}
         >
-          <p className={`whitespace-pre-wrap leading-relaxed ${isHuman ? 'font-medium' : 'font-normal'}`}>
-            {message.content}
-          </p>
+          <p className="whitespace-pre-wrap">{message.content}</p>
         </div>
       </div>
     </div>

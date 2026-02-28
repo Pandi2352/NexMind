@@ -1,6 +1,11 @@
-import { useState } from 'react';
-import { AiProviderName } from '../../types';
-import type { AiProviderNameType, AiProvider, CreateAiProviderDto, UpdateAiProviderDto } from '../../types';
+import { useState } from "react";
+import { AiProviderName } from "../../types";
+import type {
+  AiProviderNameType,
+  AiProvider,
+  CreateAiProviderDto,
+  UpdateAiProviderDto,
+} from "../../types";
 
 interface ProviderFormProps {
   initial?: AiProvider;
@@ -8,18 +13,36 @@ interface ProviderFormProps {
   onCancel: () => void;
 }
 
-const providerOptions: { value: AiProviderNameType; label: string }[] = [
-  { value: AiProviderName.OLLAMA_LOCAL, label: 'Ollama Local' },
-  { value: AiProviderName.OLLAMA_CLOUD, label: 'Ollama Cloud' },
-  { value: AiProviderName.GEMINI, label: 'Gemini' },
+const providerOptions: {
+  value: AiProviderNameType;
+  label: string;
+  desc: string;
+}[] = [
+  {
+    value: AiProviderName.OLLAMA_LOCAL,
+    label: "Ollama Local",
+    desc: "Local instance at localhost:11434",
+  },
+  {
+    value: AiProviderName.OLLAMA_CLOUD,
+    label: "Ollama Cloud",
+    desc: "Remote Ollama with custom URL",
+  },
+  { value: AiProviderName.GEMINI, label: "Gemini", desc: "Google Gemini API" },
 ];
 
-export function ProviderForm({ initial, onSubmit, onCancel }: ProviderFormProps) {
+export function ProviderForm({
+  initial,
+  onSubmit,
+  onCancel,
+}: ProviderFormProps) {
   const isEditing = !!initial;
-  const [providerName, setProviderName] = useState<AiProviderNameType>(initial?.aiProviderName ?? AiProviderName.OLLAMA_LOCAL);
-  const [modelName, setModelName] = useState(initial?.modelName ?? '');
-  const [apiKey, setApiKey] = useState('');
-  const [baseUrl, setBaseUrl] = useState(initial?.baseUrl ?? '');
+  const [providerName, setProviderName] = useState<AiProviderNameType>(
+    initial?.aiProviderName ?? AiProviderName.OLLAMA_LOCAL,
+  );
+  const [modelName, setModelName] = useState(initial?.modelName ?? "");
+  const [apiKey, setApiKey] = useState("");
+  const [baseUrl, setBaseUrl] = useState(initial?.baseUrl ?? "");
   const [submitting, setSubmitting] = useState(false);
 
   const needsApiKey = providerName === AiProviderName.GEMINI;
@@ -31,13 +54,17 @@ export function ProviderForm({ initial, onSubmit, onCancel }: ProviderFormProps)
     try {
       if (isEditing) {
         const dto: UpdateAiProviderDto = {};
-        if (providerName !== initial.aiProviderName) dto.aiProviderName = providerName;
+        if (providerName !== initial.aiProviderName)
+          dto.aiProviderName = providerName;
         if (modelName !== initial.modelName) dto.modelName = modelName;
         if (apiKey) dto.apiKey = apiKey;
         if (needsBaseUrl && baseUrl !== initial.baseUrl) dto.baseUrl = baseUrl;
         await onSubmit(dto);
       } else {
-        const dto: CreateAiProviderDto = { aiProviderName: providerName, modelName };
+        const dto: CreateAiProviderDto = {
+          aiProviderName: providerName,
+          modelName,
+        };
         if (needsApiKey && apiKey) dto.apiKey = apiKey;
         if (needsBaseUrl && baseUrl) dto.baseUrl = baseUrl;
         await onSubmit(dto);
@@ -47,85 +74,108 @@ export function ProviderForm({ initial, onSubmit, onCancel }: ProviderFormProps)
     }
   };
 
-  const inputClasses = "mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition-all focus:border-slate-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900";
-
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-slate-700">Provider Type</label>
-        <div className="relative">
-          <select
-            value={providerName}
-            onChange={(e) => setProviderName(e.target.value as AiProviderNameType)}
-            className={`${inputClasses} appearance-none pr-10`}
-          >
-            {providerOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 top-2 flex items-center px-4 text-slate-500">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
+        <label className="mb-2 block text-sm font-medium text-slate-700">
+          Provider Type
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {providerOptions.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setProviderName(opt.value)}
+              className={`rounded-md border-2 px-3 py-3 text-left transition-all cursor-pointer ${
+                providerName === opt.value
+                  ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500"
+                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+              }`}
+            >
+              <p
+                className={`text-xs font-semibold ${providerName === opt.value ? "text-blue-700" : "text-slate-800"}`}
+              >
+                {opt.label}
+              </p>
+              <p className="mt-0.5 text-[10px] text-slate-500 leading-tight">
+                {opt.desc}
+              </p>
+            </button>
+          ))}
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-700">Model Name</label>
+        <label className="mb-2 block text-sm font-medium text-slate-700">
+          Model Name
+        </label>
         <input
           type="text"
           value={modelName}
           onChange={(e) => setModelName(e.target.value)}
           placeholder="e.g. llama3.2 or gemini-2.0-flash"
           required
-          className={inputClasses}
+          className="block w-full rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-all focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
         />
       </div>
 
       {needsApiKey && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="block text-sm font-medium text-slate-700">API Key</label>
+        <div>
+          <label className="mb-2 block text-sm font-medium text-slate-700">
+            API Key
+          </label>
           <input
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder={isEditing ? 'Leave blank to keep existing key' : 'Enter your API key'}
-            className={inputClasses}
+            placeholder={
+              isEditing
+                ? "Leave blank to keep existing key"
+                : "Enter your Gemini API key"
+            }
+            className="block w-full rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-all focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
           />
           {isEditing && (
-            <p className="mt-2 text-xs text-slate-500">Only fill this if you want to change the API key</p>
+            <p className="mt-1.5 text-xs text-slate-500">
+              Only fill this if you want to change the API key
+            </p>
           )}
         </div>
       )}
 
       {needsBaseUrl && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="block text-sm font-medium text-slate-700">Base URL</label>
+        <div>
+          <label className="mb-2 block text-sm font-medium text-slate-700">
+            Base URL
+          </label>
           <input
             type="url"
             value={baseUrl}
             onChange={(e) => setBaseUrl(e.target.value)}
             placeholder="https://your-ollama-instance.com"
-            className={inputClasses}
+            className="block w-full rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-all focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
           />
         </div>
       )}
 
-      <div className="mt-8 border-t border-slate-100 pt-5 flex items-center justify-end gap-3">
+      <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-xl px-5 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+          className="rounded-md px-5 py-2.5 text-sm font-medium text-slate-600 transition-colors bg-gray-100 cursor-pointer hover:bg-slate-100"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:opacity-50"
+          className="rounded-md bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-2.5 text-sm cursor-pointer font-semibold text-white transition-all hover:shadow-blue-500/40 hover:brightness-110 disabled:opacity-50"
         >
-          {submitting ? 'Saving...' : isEditing ? 'Update Provider' : 'Create Provider'}
+          {submitting
+            ? "Saving..."
+            : isEditing
+              ? "Update Provider"
+              : "Create Provider"}
         </button>
       </div>
     </form>
