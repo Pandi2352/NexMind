@@ -19,8 +19,8 @@ export function ChatArea({ conversation, sending, onSend }: ChatAreaProps) {
 
   if (!conversation) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <EmptyState title="No conversation selected" description="Select or create a conversation to start chatting" />
+      <div className="flex flex-1 items-center justify-center bg-slate-50">
+        <EmptyState title="No conversation active" description="Select or create a conversation to start." />
       </div>
     );
   }
@@ -34,43 +34,44 @@ export function ChatArea({ conversation, sending, onSend }: ChatAreaProps) {
   };
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="border-b border-slate-200 bg-white px-4 py-3">
-        <h3 className="font-semibold text-slate-900">{conversation.title}</h3>
+    <div className="flex flex-1 flex-col bg-white">
+      <div className="border-b-2 border-slate-900 bg-slate-900 px-6 py-4 flex flex-col items-center shadow-sm z-10">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Active Thread</span>
+        <h3 className="text-xl font-extrabold uppercase tracking-tight text-white">{conversation.title}</h3>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 space-y-3">
+      <div className="flex-1 overflow-auto p-6 space-y-6 bg-slate-50 pattern-grid-slate-100">
         {conversation.messages.map((msg) => (
           <MessageBubble key={msg._id} message={msg} />
         ))}
         {sending && (
           <div className="flex justify-start">
-            <div className="rounded-lg border border-slate-200 bg-white px-4 py-2">
-              <div className="flex gap-1">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:0.15s]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:0.3s]" />
+            <div className="border-2 border-slate-900 bg-white px-5 py-3 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+              <div className="flex gap-2">
+                <span className="h-3 w-3 animate-pulse bg-slate-900" />
+                <span className="h-3 w-3 animate-pulse bg-slate-900 [animation-delay:0.15s]" />
+                <span className="h-3 w-3 animate-pulse bg-slate-900 [animation-delay:0.3s]" />
               </div>
             </div>
           </div>
         )}
-        <div ref={bottomRef} />
+        <div ref={bottomRef} className="h-4" />
       </div>
 
-      <form onSubmit={handleSubmit} className="border-t border-slate-200 bg-white p-4">
-        <div className="flex gap-2">
+      <form onSubmit={handleSubmit} className="border-t-2 border-slate-900 bg-white p-6">
+        <div className="flex flex-col sm:flex-row gap-4 max-w-5xl mx-auto">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
+            placeholder="TYPE MESSAGE..."
             disabled={sending}
-            className="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none disabled:opacity-50"
+            className="flex-1 border-2 border-slate-900 bg-slate-50 px-5 py-4 text-sm font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="border-2 border-slate-900 bg-slate-900 px-10 py-4 text-sm font-extrabold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-slate-900 disabled:opacity-50 disabled:hover:bg-slate-900 disabled:hover:text-white"
           >
             Send
           </button>

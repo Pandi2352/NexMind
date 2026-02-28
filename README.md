@@ -18,10 +18,11 @@ nexmind/
 | Feature | Description |
 |---------|-------------|
 | **AI Providers** | CRUD for Ollama (local/cloud) and Gemini providers with active-provider toggle |
-| **Agent Config** | Assign specific providers to Chat, Translator, or Summarizer agents, with fallback to global active |
+| **Agent Config** | Assign specific providers per agent type, with fallback to global active |
 | **Chat** | Multi-conversation chatbot with message history and system prompts |
 | **Translator** | AI-powered text translation with language auto-detection and history |
-| **Summarizer** | AI-powered text summarization with multiple styles (bullet-points, TL;DR, ELI5, etc.) and history |
+| **Summarizer** | Text summarization with multiple styles (bullet-points, TL;DR, ELI5, etc.) and history |
+| **Prompt Optimizer** | Rewrites vague prompts into clear, structured instructions with copy-to-clipboard and history |
 
 ## Prerequisites
 
@@ -76,6 +77,7 @@ Navigate to [http://localhost:5173](http://localhost:5173). You'll land on the *
 3. Go to **Chat** and start a conversation
 4. Or go to **Translator** and translate some text
 5. Or go to **Summarizer** and summarize a document
+6. Or go to **Prompt Optimizer** and refine a prompt
 
 ## Environment Variables
 
@@ -110,7 +112,7 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 |--------|----------|-------------|
 | `PUT` | `/agent-config/assign` | Assign provider to an agent type |
 | `GET` | `/agent-config` | List all assignments |
-| `GET` | `/agent-config/:agentType` | Get provider for agent (`chat`, `translator`, or `summarizer`) |
+| `GET` | `/agent-config/:agentType` | Get provider for agent (`chat`, `translator`, `summarizer`, `prompt-optimizer`) |
 | `DELETE` | `/agent-config/:agentType` | Remove assignment (falls back to global active) |
 
 ### Chat
@@ -141,6 +143,15 @@ Swagger UI is available at [http://localhost:1000/api/docs](http://localhost:100
 | `GET` | `/summarizer/:id` | Get summary by ID |
 | `DELETE` | `/summarizer/:id` | Delete a summary |
 
+### Prompt Optimizer
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/prompt-optimizer` | Optimize a prompt |
+| `GET` | `/prompt-optimizer` | List all optimizations |
+| `GET` | `/prompt-optimizer/:id` | Get optimization by ID |
+| `DELETE` | `/prompt-optimizer/:id` | Delete an optimization |
+
 ## Supported Providers
 
 | Provider | Required Fields | Notes |
@@ -160,6 +171,7 @@ src/
 ├── chat/                 # Conversations & messages
 ├── translator/           # Text translation
 ├── summarizer/           # Text summarization
+├── prompt-optimizer/     # Prompt rewriting & optimization
 ├── langchain/            # Shared LLM factory (BaseChatModel)
 ├── config/               # Database & Swagger config
 ├── common/utils/         # UUID generation
@@ -182,7 +194,8 @@ src/
 │   ├── agent-config/     # Agent-provider assignment page
 │   ├── chat/             # Chat interface (conversations + messages)
 │   ├── translator/       # Translation form + history
-│   └── summarizer/       # Summarization form + history
+│   ├── summarizer/       # Summarization form + history
+│   └── prompt-optimizer/ # Prompt optimization + copy + history
 ├── App.tsx               # Router setup
 └── main.tsx              # Entry point
 ```

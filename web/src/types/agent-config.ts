@@ -2,6 +2,7 @@ export const AgentType = {
   CHAT: 'chat',
   TRANSLATOR: 'translator',
   SUMMARIZER: 'summarizer',
+  PROMPT_OPTIMIZER: 'prompt-optimizer',
 } as const;
 
 export type AgentTypeValue = (typeof AgentType)[keyof typeof AgentType];

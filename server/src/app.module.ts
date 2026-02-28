@@ -9,6 +9,7 @@ import { ChatModule } from './chat/chat.module';
 import { TranslatorModule } from './translator/translator.module';
 import { AgentConfigModule } from './agent-config/agent-config.module';
 import { SummarizerModule } from './summarizer/summarizer.module';
+import { PromptOptimizerModule } from './prompt-optimizer/prompt-optimizer.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SummarizerModule } from './summarizer/summarizer.module';
     ChatModule,
     TranslatorModule,
     SummarizerModule,
+    PromptOptimizerModule,
     AgentConfigModule,
   ],
   controllers: [AppController],

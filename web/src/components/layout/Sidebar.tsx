@@ -6,6 +6,7 @@ const navItems = [
   { to: '/chat', label: 'Chat', icon: '💬' },
   { to: '/translator', label: 'Translator', icon: '🌐' },
   { to: '/summarizer', label: 'Summarizer', icon: '📝' },
+  { to: '/prompt-optimizer', label: 'Prompt Optimizer', icon: '✨' },
 ];
 
 export function Sidebar() {
